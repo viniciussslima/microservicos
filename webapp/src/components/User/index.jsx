@@ -1,7 +1,7 @@
 import React from "react";
 import Navbar from "../../components/Navbar";
 import Tabs from "../../components/Tabs";
-import requestApi from "../../requestApi";
+import { requestApi } from "../../requestApi";
 
 export default function User({ user, id }) {
   const follow = async () => {

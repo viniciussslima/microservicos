@@ -1,9 +1,27 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import "./styles.css";
 import { useAuth } from "../../contexts/Auth";
+import { requestAuthApi } from "../../requestApi";
 
 export default function Sidbar() {
   const { user, logout } = useAuth();
+
+  const [users, setUsers] = useState([]);
+
+  useEffect(() => {
+    const getUsers = async () => {
+      try {
+        const response = await requestAuthApi.get("/users", {
+          headers: { "x-access-token": user.token },
+        });
+        setUsers(response.data);
+      } catch (err) {
+        console.log(err);
+      }
+    };
+
+    getUsers();
+  }, [user]);
   return (
     <>
       <br />
@@ -80,7 +98,7 @@ export default function Sidbar() {
               <li className="list-group-item list-group-item-primary">
                 People you might know
               </li>
-              {user.people.map((person) => (
+              {users.map((person) => (
                 <li key={person._id} className="list-group-item">
                   <img
                     src={`http://localhost:8000${person.profile_pic}`}

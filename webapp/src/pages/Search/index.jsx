@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useAuth } from "../../contexts/Auth";
 import Navbar from "../../components/Navbar";
 import Tabs from "../../components/Tabs";
-import requestApi from "../../requestApi";
+import { requestApi } from "../../requestApi";
 
 export default function Search() {
   const { user } = useAuth();

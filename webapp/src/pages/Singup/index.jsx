@@ -1,10 +1,9 @@
 import React, { useState } from "react";
-import { useHistory } from "react-router";
 import logo from "../../images/logo/logo.png";
-import requestAPi from "../../requestApi";
+import { useAuth } from "../../contexts/Auth";
 
 export default function Sigup() {
-  const history = useHistory();
+  const { singup } = useAuth();
 
   const [error, setError] = useState();
   const [firtName, setFirtName] = useState("");
@@ -18,22 +17,15 @@ export default function Sigup() {
   const handleSubmit = async (event) => {
     event.preventDefault();
     try {
-      const formData = new FormData();
-      formData.append("fn", firtName);
-      formData.append("ln", lastName);
-      formData.append("username", username);
-      formData.append("password", password);
-      formData.append("day", dayOfBirth);
-      formData.append("month", monthOfBirth);
-      formData.append("year", yearOfBirth);
-
-      await requestAPi.post("/account/new", formData, {
-        headers: {
-          "Content-Type": `multipart/form-data; boundary=${formData._boundary}`,
-        },
-      });
-      history.push("/");
-      document.location.reload(true);
+      await singup(
+        firtName,
+        lastName,
+        username,
+        password,
+        dayOfBirth,
+        monthOfBirth,
+        yearOfBirth
+      );
     } catch (err) {
       console.log(err);
       if (err?.response?.error) {

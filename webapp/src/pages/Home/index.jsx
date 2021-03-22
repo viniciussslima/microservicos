@@ -1,12 +1,30 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { useAuth } from "../../contexts/Auth";
 import Navbar from "../../components/Navbar";
 import Sidebar from "../../components/Sidebar";
 import Tabs from "../../components/Tabs";
+import { requestFeedApi } from "../../requestApi";
 
 export default function Home() {
   const { user } = useAuth();
-  console.log(user);
+
+  const [posts, setPosts] = useState([]);
+
+  useEffect(() => {
+    const getPosts = async () => {
+      try {
+        const response = await requestFeedApi.get("/", {
+          headers: { "x-access-token": user.token },
+        });
+        setPosts(response.data);
+      } catch (err) {
+        console.log(err);
+      }
+    };
+
+    getPosts();
+  }, [user]);
+
   return (
     <>
       <Navbar />
@@ -21,12 +39,12 @@ export default function Home() {
             <li className="list-group-item list-group-item-primary">
               <br />
               <img
-                src={`http://localhost:8000${user.user.profile_pic}`}
+                src={`http://localhost:8000${user.profile_pic}`}
                 alt="profile-pic"
                 className="gram-card-user-image"
               />
               <a className="gram-card-user-name" href="/me">
-                {user.user.username}'s Dashboard
+                {user.username}'s Dashboard
               </a>
               <br />
               <span className="label label-info" style={{ float: "right" }}>
@@ -35,7 +53,7 @@ export default function Home() {
               <br />
             </li>
           </ul>
-          {user.posts.map((obj, index) => (
+          {posts.map((obj, index) => (
             <div key={index} className="gram-card">
               <div className="gram-card-header">
                 <img
@@ -66,7 +84,7 @@ export default function Home() {
                         <i className="fa fa-share"></i> View
                       </a>
                     </li>
-                    {obj.post.author === user.user.username ? (
+                    {obj.post.author === user.username ? (
                       <>
                         <li>
                           <a
