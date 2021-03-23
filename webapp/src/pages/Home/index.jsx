@@ -121,7 +121,7 @@ export default function Home() {
                         className="progressive replace"
                       >
                         <img
-                          src={`http://localhost:8000${obj.post.static_url}`}
+                          src={`http://localhost:3003${obj.post.static_url}`}
                           alt=""
                         />
                       </a>
