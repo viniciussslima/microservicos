@@ -25,6 +25,62 @@ export default function Home() {
     getPosts();
   }, [user]);
 
+  const comment = async (postId, author, event) => {
+    var key = event.which || event.keyCode;
+    if (key === 13) {
+      try {
+        await requestFeedApi.post(
+          "/comment",
+          {
+            author: author,
+            by: user.username,
+            text: event.target.value,
+            _id: postId,
+          },
+          {
+            headers: { "x-access-token": user.token },
+          }
+        );
+        setPosts((posts) => {
+          let post = posts.find((post) => post.post._id === postId);
+          post.post.comments.push({
+            author: author,
+            by: user.username,
+            text: event.target.value,
+          });
+          console.log(post.post.comments);
+
+          return [...posts];
+        });
+      } catch (err) {
+        console.log(err);
+      }
+    }
+  };
+
+  const like = async (postId, author, likes) => {
+    try {
+      await requestFeedApi.post(
+        "/like",
+        {
+          author: author,
+          _id: postId,
+        },
+        {
+          headers: { "x-access-token": user.token },
+        }
+      );
+
+      setPosts((posts) => {
+        let post = posts.find((post) => post.post._id === postId);
+        post.post.likes.push(user.username);
+        return [...posts];
+      });
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
   return (
     <>
       <Navbar />
@@ -143,7 +199,7 @@ export default function Home() {
                     className="gram-card-content-user"
                     href="/u/undefined_void"
                   >
-                    {obj.post.author}
+                    {obj.post.author}{" "}
                   </a>
                   {obj.post.caption}
                   <span className="label label-info">{obj.post.category}</span>
@@ -156,7 +212,7 @@ export default function Home() {
                   {obj.post.comments.map((comment, index) => (
                     <React.Fragment key={`${comment.by}-${index}`}>
                       <a className="user-comment" href={`/u/${comment.by}`}>
-                        {comment.by}
+                        {comment.by}{" "}
                       </a>
                       {comment.text}
                       <br />
@@ -167,22 +223,28 @@ export default function Home() {
               <hr />
               <div className="gram-card-footer">
                 <button
-                  data="obj.post.likes"
                   disabled={obj.post.likes.includes(user.username)}
-                  // onClick="this.innerHTML =  '<i className=\'glyphicon glyphicon-thumbs-up\'></i> ' + (parseInt(${ obj.post.likes.length }) + 1); this.disabled = true;"
+                  onClick={() =>
+                    like(obj.post._id, obj.post.author, obj.post.likes)
+                  }
                   className="footer-action-icons likes btn btn-link non-hoverable like-button-box"
-                  author={obj.post.author}
                   id={`${obj.post._id}-like`}
                 >
-                  <i className="glyphicon glyphicon-thumbs-up"></i>
-                  {obj.post.likes.length}
+                  <i className="far fa-thumbs-up"></i> {obj.post.likes.length}
                 </button>
                 <input
                   id={obj.post._id}
                   className="comments-input comment-input-box"
-                  author={obj.post.author}
                   type="text"
                   placeholder="Click enter to comment here..."
+                  onKeyUp={(event) =>
+                    comment(
+                      obj.post._id,
+                      obj.post.author,
+                      event,
+                      obj.post.comments
+                    )
+                  }
                 />
               </div>
             </div>
