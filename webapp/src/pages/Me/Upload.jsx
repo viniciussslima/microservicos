@@ -1,10 +1,13 @@
 import React, { useState } from "react";
+import { useHistory } from "react-router-dom";
 import { useAuth } from "../../contexts/Auth";
 import Navbar from "../../components/Navbar";
 import { requestFeedApi } from "../../requestApi";
 
 export default function Upload() {
   const { user } = useAuth();
+
+  const history = useHistory();
 
   const [file, setFile] = useState();
   const [preview, setPreview] = useState();
@@ -31,6 +34,8 @@ export default function Upload() {
           "x-access-token": user.token,
         },
       });
+
+      history.push("/");
     } catch (err) {
       console.log(err);
     }
@@ -73,12 +78,14 @@ export default function Upload() {
                   />
                 </div>
                 <div id="video-priview"></div>
-                <img
-                  src={preview}
-                  id="blah"
-                  alt="post"
-                  class="img-responsive"
-                />
+                {preview ? (
+                  <img
+                    src={preview}
+                    id="blah"
+                    alt="post"
+                    class="img-responsive"
+                  />
+                ) : null}
               </center>
             </div>
 
