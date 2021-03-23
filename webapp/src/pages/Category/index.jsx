@@ -28,7 +28,7 @@ export default function Chat() {
     };
 
     getUsers();
-  }, [user]);
+  }, [user, location]);
 
   return (
     <>
