@@ -83,7 +83,7 @@ export default function Upload() {
                     src={preview}
                     id="blah"
                     alt="post"
-                    class="img-responsive"
+                    className="img-responsive"
                   />
                 ) : null}
               </center>
