@@ -5,5 +5,5 @@ import User from "../../components/User";
 export default function Me() {
   const { user } = useAuth();
 
-  return <User user={user.user} />;
+  return <User user={user} />;
 }

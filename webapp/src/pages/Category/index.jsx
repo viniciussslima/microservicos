@@ -1,12 +1,34 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import { useAuth } from "../../contexts/Auth";
 import Navbar from "../../components/Navbar";
+import { requestFeedApi } from "../../requestApi";
 
 export default function Chat() {
   const { user } = useAuth();
 
   const location = useLocation();
+
+  const [users, setUsers] = useState([]);
+
+  useEffect(() => {
+    const getUsers = async () => {
+      try {
+        const response = await requestFeedApi.get(
+          `/${location.pathname.split("/")[2]}`,
+          {
+            headers: { "x-access-token": user.token },
+          }
+        );
+        console.log(response.data);
+        setUsers(response.data.people);
+      } catch (err) {
+        console.log(err);
+      }
+    };
+
+    getUsers();
+  }, [user]);
 
   return (
     <>
@@ -17,7 +39,7 @@ export default function Chat() {
       <br />
       <br />
       <div className="container-fluid form-container" id="main">
-        {user.people.map((person) =>
+        {users.map((person) =>
           person.posts.map((post) => {
             if (post.category === location.pathname.split("/")[2]) {
               return (
@@ -116,13 +138,12 @@ export default function Chat() {
 
                     <input
                       className="comments-input"
-                      id="input_{{_id}}"
                       type="text"
                       placeholder="Comment here..."
                     />
                     <button
                       className="footer-action-icons btn btn-link"
-                      onClick="comment('{{_id}}')"
+                      // onClick="comment('{{_id}}')"
                     >
                       <i className="glyphicon glyphicon-comment"></i>
                     </button>

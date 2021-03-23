@@ -1,9 +1,40 @@
-import React from "react";
+import React, { useState } from "react";
 import { useAuth } from "../../contexts/Auth";
 import Navbar from "../../components/Navbar";
+import { requestFeedApi } from "../../requestApi";
 
 export default function Upload() {
   const { user } = useAuth();
+
+  const [file, setFile] = useState();
+  const [preview, setPreview] = useState();
+  const [caption, setCaption] = useState("");
+  const [type, setType] = useState("");
+
+  const handleChange = (event) => {
+    event.preventDefault();
+    setPreview(URL.createObjectURL(event.target.files[0]));
+    setFile(event.target.files[0]);
+  };
+
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    try {
+      const formData = new FormData();
+      formData.append("caption", caption);
+      formData.append("type", type);
+      formData.append("filetoupload", file);
+
+      await requestFeedApi.post("/upload", formData, {
+        headers: {
+          "Content-Type": `multipart/form-data; boundary=${formData._boundary}`,
+          "x-access-token": user.token,
+        },
+      });
+    } catch (err) {
+      console.log(err);
+    }
+  };
   return (
     <>
       <Navbar />
@@ -13,20 +44,16 @@ export default function Upload() {
       <br />
       <br />
       <div className="container form-container">
-        <form
-          action="http://localhost:8000/me/upload"
-          method="post"
-          encType="multipart/form-data"
-        >
+        <form onSubmit={handleSubmit}>
           <div className="gram-card">
             <div className="gram-card-header">
               <img
-                src={`http://localhost:8000${user.user.profile_pic}`}
+                src={`http://localhost:8000${user.profile_pic}`}
                 alt="profile-pic"
                 className="gram-card-user-image"
               />
               <a className="gram-card-user-name" href="/u/">
-                {user.user.username}
+                {user.username}
               </a>
               <div className="time"></div>
             </div>
@@ -41,19 +68,24 @@ export default function Upload() {
                   <input
                     type="file"
                     name="filetoupload"
-                    onChange="readURL(this);"
+                    onChange={handleChange}
                     id="file"
                   />
                 </div>
                 <div id="video-priview"></div>
-                {/* <img src="" id="blah" className="img-responsive" /> */}
+                <img
+                  src={preview}
+                  id="blah"
+                  alt="post"
+                  class="img-responsive"
+                />
               </center>
             </div>
 
             <div className="gram-card-content">
               <p>
                 <a className="gram-card-content-user" href="/me">
-                  {user.user.username}
+                  {user.username}
                 </a>
                 <br />
                 <input
@@ -61,8 +93,13 @@ export default function Upload() {
                   name="caption"
                   placeholder="some_cool_text"
                   className="form-control"
+                  onChange={(event) => setCaption(event.target.value)}
                 />
-                <select className="form-control" name="type">
+                <select
+                  className="form-control"
+                  name="type"
+                  onChange={(event) => setType(event.target.value)}
+                >
                   <option>thoughts</option>
                   <option>moments</option>
                   <option>events</option>
@@ -78,22 +115,17 @@ export default function Upload() {
               <button
                 className="footer-action-icons likes btn btn-link non-hoverable"
                 disabled
-                onClick="like('{{_id}}')"
-                id="{{_id}}"
               >
                 <i className="glyphicon glyphicon-thumbs-up"></i> 10
               </button>
 
               <input
                 className="comments-input"
-                id="input_{{_id}}"
+                disabled
                 type="text"
                 placeholder="Comment here..."
               />
-              <button
-                className="footer-action-icons btn btn-primary"
-                onClick="comment('{{_id}}')"
-              >
+              <button className="footer-action-icons btn btn-primary">
                 <i className="glyphicon glyphicon-file-invoice"></i> Post
               </button>
             </div>

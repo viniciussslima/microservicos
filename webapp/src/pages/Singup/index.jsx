@@ -1,9 +1,12 @@
 import React, { useState } from "react";
+import { useHistory } from "react-router-dom";
 import logo from "../../images/logo/logo.png";
 import { useAuth } from "../../contexts/Auth";
 
 export default function Sigup() {
   const { singup } = useAuth();
+
+  const history = useHistory();
 
   const [error, setError] = useState();
   const [firtName, setFirtName] = useState("");
@@ -26,6 +29,7 @@ export default function Sigup() {
         monthOfBirth,
         yearOfBirth
       );
+      history.push("/");
     } catch (err) {
       console.log(err);
       if (err?.response?.error) {

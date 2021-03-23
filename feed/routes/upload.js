@@ -3,6 +3,8 @@ const fs = require("file-system");
 const mime = require("mime-types");
 var path = require("path");
 var mv = require("mv");
+var guid = require("guid");
+const { cloudinary, isSetup } = require("../config/cloudinary");
 
 module.exports = (req, res, next) => {
   // Generate a random id
@@ -12,17 +14,15 @@ module.exports = (req, res, next) => {
     cloudinary.v2.uploader.upload(
       req.files.filetoupload.path,
       function (error, result) {
-        console.log(result, error);
         if (!error) {
           final_location = result.url;
           type = mime.lookup(req.files.filetoupload.name).split("/")[1];
-          db.findOne({ username: req.session.user }, (err, u) => {
-            console.log(u);
+          db.findOne({ username: req.user.username }, (err, u) => {
             if (u != undefined) {
               u.posts.push({
                 _id: random_id,
-                author: req.session.user,
-                authorID: req.session._id,
+                author: req.user.username,
+                authorID: u._id,
                 static_url: final_location,
                 caption: req.body.caption,
                 category: req.body.type,
@@ -34,8 +34,6 @@ module.exports = (req, res, next) => {
               });
               u.save((err) => {
                 if (err) throw err;
-                console.log("Post saved");
-                // Redirect back after the job is done.
                 res.status(204).send();
               });
             } else {
@@ -46,41 +44,34 @@ module.exports = (req, res, next) => {
       }
     );
   } else if (req.files.filetoupload.name) {
-    // Assign static_url path
     var oldpath = req.files.filetoupload.path;
     var newpath = path.join(
       __dirname,
-      `../public/feeds/${req.session.user}_${random_id}${req.files.filetoupload.name}`
+      `../public/feeds/${req.user._id}_${random_id}${req.files.filetoupload.name}`
     );
-    var final_location = `/feeds/${req.session.user}_${random_id}${req.files.filetoupload.name}`;
-
-    console.log(
-      `${oldpath} - OldPath\n ${newpath} - Newpath\n ${final_location} - DiskLocation\n`
-    );
-    // Finally upload the file to disk and save the feed to users profile.
+    var final_location = `/feeds/${req.user._id}_${random_id}${req.files.filetoupload.name}`;
     var type = mime.lookup(req.files.filetoupload.name).split("/")[1];
-    mv(oldpath, newpath, function (err) {
-      console.log("moving files");
-    });
-    db.findOne({ username: req.session.user }, (err, u) => {
-      console.log(u);
-      u.posts.push({
-        _id: random_id,
-        author: req.session.user,
-        authorID: req.session._id,
-        static_url: final_location,
-        caption: req.body.caption,
-        category: req.body.type,
-        comments: [],
-        likes: [],
-        type: type,
-        createdAt: new Date(),
-        lastEditedAt: new Date(),
-      });
+    mv(oldpath, newpath, function (err) {});
+    db.findOne({ username: req.user.username }, (err, u) => {
+      if (u) {
+        u.posts.push({
+          _id: random_id,
+          author: req.user.username,
+          authorID: u._id,
+          static_url: final_location,
+          caption: req.body.caption,
+          category: req.body.type,
+          comments: [],
+          likes: [],
+          type: type,
+          createdAt: new Date(),
+          lastEditedAt: new Date(),
+        });
+      } else {
+        return res.status(400).send(err);
+      }
       u.save((err) => {
         if (err) throw err;
-        console.log("Post saved");
-        // Redirect back after the job is done.
         res.status(204).send();
       });
     });

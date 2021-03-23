@@ -8,11 +8,12 @@ export default function Settings() {
   const { user } = useAuth();
 
   const [tempUser, setTempUser] = useState({
-    username: user.user.username,
-    firstname: user.user.firstname,
-    lastname: user.user.lastname,
-    bio: user.user.bio,
+    username: user.username,
+    firstname: user.firstname,
+    lastname: user.lastname,
+    bio: user.bio,
   });
+  const [pic, setPic] = useState();
 
   const change = (value, type) => {
     setTempUser((user) => {
@@ -21,21 +22,26 @@ export default function Settings() {
     });
   };
 
-  const handleSubmit = (value, key) => {
-    if (key === "pic") {
-      var data = new FormData();
-      data.append("file", value);
-      requestApi.post("/api/v1/user/picture?id=" + user.user._id, data, {
-        headers: {
-          "Content-Type": `multipart/form-data; boundary=${data._boundary}`,
-        },
-      });
-    } else {
-      requestApi.post("/api/v1/user/set", {
-        _id: user.user._id,
-        key: key.toLowerCase().replace(" ", ""),
-        value,
-      });
+  const handleSubmit = async (value, key) => {
+    try {
+      if (key === "pic") {
+        var data = new FormData();
+        data.append("file", value);
+        await requestApi.post("/api/v1/user/picture?id=" + user._id, data, {
+          headers: {
+            "Content-Type": `multipart/form-data; boundary=${data._boundary}`,
+          },
+        });
+        setPic(URL.createObjectURL(value));
+      } else {
+        await requestApi.post("/api/v1/user/set", {
+          _id: user._id,
+          key: key.toLowerCase().replace(" ", ""),
+          value,
+        });
+      }
+    } catch (err) {
+      console.log(err);
     }
   };
   return (
@@ -47,7 +53,7 @@ export default function Settings() {
         <br />
         <img
           style={{ display: "inline", borderRadius: "50%", width: "20%" }}
-          src={`http://localhost:8000/${user.user.profile_pic}`}
+          src={pic || `http://localhost:8000${user.profile_pic}`}
           alt="profile-pic"
           id="pfp"
         />

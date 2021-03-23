@@ -70,7 +70,7 @@ router.post("/v1/follow", function (req, res, next) {
 });
 
 router.post("/v1/user/:mode", function (req, res, next) {
-  if (!req.session.user) return res.sendStatus(404);
+  // if (!req.session.user) return res.sendStatus(404);
   if (req.params.mode == "picture") {
     db.findOne({ _id: req.query.id }, (err, user) => {
       if (!user) return res.sendStatus(404);

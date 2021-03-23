@@ -1,10 +1,28 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Navbar from "../../components/Navbar";
 import Tabs from "../../components/Tabs";
 import { useAuth } from "../../contexts/Auth";
+import { requestAuthApi } from "../../requestApi";
 
 export default function Chat() {
   const { user } = useAuth();
+
+  const [users, setUsers] = useState([]);
+
+  useEffect(() => {
+    const getUsers = async () => {
+      try {
+        const response = await requestAuthApi.get("/users", {
+          headers: { "x-access-token": user.token },
+        });
+        setUsers(response.data);
+      } catch (err) {
+        console.log(err);
+      }
+    };
+
+    getUsers();
+  }, [user]);
   return (
     <>
       <Navbar />
@@ -14,7 +32,7 @@ export default function Chat() {
           <li className="list-group-item active">
             <strong>Talk to someone</strong>
           </li>
-          {user.people.map((user) => (
+          {users.map((user) => (
             <li key={user._id} className="list-group-item">
               <img
                 className="logo"

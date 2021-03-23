@@ -1,12 +1,27 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useAuth } from "../../contexts/Auth";
 import Navbar from "../../components/Navbar";
 import Tabs from "../../components/Tabs";
-import { requestApi } from "../../requestApi";
+import { requestAuthApi, requestApi } from "../../requestApi";
 
 export default function Search() {
   const { user } = useAuth();
-  const [list, setList] = useState(user.people);
+  const [list, setList] = useState([]);
+
+  useEffect(() => {
+    const getUsers = async () => {
+      try {
+        const response = await requestAuthApi.get("/users", {
+          headers: { "x-access-token": user.token },
+        });
+        setList(response.data);
+      } catch (err) {
+        console.log(err);
+      }
+    };
+
+    getUsers();
+  }, [user]);
 
   const updateList = async (query) => {
     let response = await requestApi.get("/api/v1/search", {
@@ -45,7 +60,7 @@ export default function Search() {
             {list.map((person, index) => (
               <li key={index} className="list-group-item">
                 <img
-                  src={`http://localhost:8000/${person.profile_pic}`}
+                  src={`http://localhost:8000${person.profile_pic}`}
                   alt="profile-pic"
                   className="logo"
                 />
