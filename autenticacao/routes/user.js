@@ -11,7 +11,7 @@ module.exports = (req, res) => {
     user = { username: decoded.username };
     db.findOne(user, (error, result) => {
       if (!result) {
-        return res.status(400).sed({
+        return res.status(400).send({
           error: "Bad username",
         });
       } else {
