@@ -9,7 +9,7 @@ module.exports = (req, res) => {
     if (err) return res.status(401).send({ message: "Unauthenticated user" });
     db.findOne(req.query, (error, result) => {
       if (!result) {
-        return res.status(400).sed({
+        return res.status(400).send({
           error: "Bad username",
         });
       } else {
