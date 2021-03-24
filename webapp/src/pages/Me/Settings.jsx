@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useAuth } from "../../contexts/Auth";
 import Navbar from "../../components/Navbar";
 import Tabs from "../../components/Tabs";
-import { requestApi } from "../../requestApi";
+import { requestAuthApi } from "../../requestApi";
 
 export default function Settings() {
   const { user } = useAuth();
@@ -27,14 +27,14 @@ export default function Settings() {
       if (key === "pic") {
         var data = new FormData();
         data.append("file", value);
-        await requestApi.post("/api/v1/user/picture?id=" + user._id, data, {
+        await requestAuthApi.post("/user/picture?id=" + user._id, data, {
           headers: {
             "Content-Type": `multipart/form-data; boundary=${data._boundary}`,
           },
         });
         setPic(URL.createObjectURL(value));
       } else {
-        await requestApi.post("/api/v1/user/set", {
+        await requestAuthApi.post("/user/set", {
           _id: user._id,
           key: key.toLowerCase().replace(" ", ""),
           value,
@@ -53,7 +53,7 @@ export default function Settings() {
         <br />
         <img
           style={{ display: "inline", borderRadius: "50%", width: "20%" }}
-          src={pic || `http://localhost:8000${user.profile_pic}`}
+          src={pic || `http://localhost:3002${user.profile_pic}`}
           alt="profile-pic"
           id="pfp"
         />

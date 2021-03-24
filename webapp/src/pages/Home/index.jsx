@@ -28,6 +28,7 @@ export default function Home() {
   const comment = async (postId, author, event) => {
     var key = event.which || event.keyCode;
     if (key === 13) {
+      console.log("uepa");
       try {
         await requestFeedApi.post(
           "/comment",
@@ -41,17 +42,18 @@ export default function Home() {
             headers: { "x-access-token": user.token },
           }
         );
-        setPosts((posts) => {
-          let post = posts.find((post) => post.post._id === postId);
-          post.post.comments.push({
-            author: author,
-            by: user.username,
-            text: event.target.value,
-          });
-          console.log(post.post.comments);
 
-          return [...posts];
+        const newPosts = [...posts];
+
+        let post = newPosts.find((post) => post.post._id === postId);
+        post.post.comments.push({
+          author: author,
+          by: user.username,
+          text: event.target.value,
         });
+        console.log(post.post.comments);
+
+        setPosts(newPosts);
       } catch (err) {
         console.log(err);
       }
@@ -71,11 +73,11 @@ export default function Home() {
         }
       );
 
-      setPosts((posts) => {
-        let post = posts.find((post) => post.post._id === postId);
-        post.post.likes.push(user.username);
-        return [...posts];
-      });
+      const newPosts = [...posts];
+      let post = newPosts.find((post) => post.post._id === postId);
+      post.post.likes.push(user.username);
+
+      setPosts(newPosts);
     } catch (err) {
       console.log(err);
     }
@@ -95,7 +97,7 @@ export default function Home() {
             <li className="list-group-item list-group-item-primary">
               <br />
               <img
-                src={`http://localhost:8000${user.profile_pic}`}
+                src={`http://localhost:3002${user.profile_pic}`}
                 alt="profile-pic"
                 className="gram-card-user-image"
               />
@@ -113,7 +115,7 @@ export default function Home() {
             <div key={index} className="gram-card">
               <div className="gram-card-header">
                 <img
-                  src={`http://localhost:8000${obj.user.profile_pic}`}
+                  src={`http://localhost:3002${obj.user.profile_pic}`}
                   alt="profile-pic"
                   className="gram-card-user-image lozad"
                 />
@@ -144,14 +146,14 @@ export default function Home() {
                       <>
                         <li>
                           <a
-                            href={`http://localhost:8000/me/post/${obj.post._id}`}
+                            href={`http://localhost:3003/me/post/${obj.post._id}`}
                           >
                             <i className="fa fa-cog"></i> Edit
                           </a>
                         </li>
                         <li>
                           <a
-                            href={`http://localhost:8000/me/post/delete/${obj.post._id}`}
+                            href={`http://localhost:3003/me/post/delete/${obj.post._id}`}
                           >
                             <i className="fa fa-trash"></i> Delete
                           </a>
@@ -173,7 +175,7 @@ export default function Home() {
                       <a
                         target="_blank"
                         rel="noreferrer"
-                        href={`http://localhost:8000${obj.post.static_url}`}
+                        href={`http://localhost:3003${obj.post.static_url}`}
                         className="progressive replace"
                       >
                         <img

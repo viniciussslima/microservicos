@@ -4,6 +4,7 @@ var mongoose = require("mongoose");
 const express = require("express");
 const morgan = require("morgan");
 const cors = require("cors");
+const path = require("path");
 
 const routes = require("./routes");
 
@@ -22,6 +23,7 @@ app.use(
   })
 );
 app.use(morgan("dev"));
+app.use(express.static(path.join(__dirname, "public")));
 app.use(routes);
 
 app.listen(process.env.SERVICE_PORT, () => {

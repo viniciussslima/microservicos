@@ -42,11 +42,12 @@ export default function Chat() {
         {users.map((person) =>
           person.posts.map((post) => {
             if (post.category === location.pathname.split("/")[2]) {
+              console.log(post);
               return (
                 <div key={`${person._id}-${post._id}`} className="gram-card">
                   <div className="gram-card-header">
                     <img
-                      src={`http://localhost:8000${person.profile_pic}`}
+                      src={`http://localhost:3002${person.profile_pic}`}
                       alt="profile-pic"
                       className="gram-card-user-image"
                     />
@@ -82,7 +83,7 @@ export default function Chat() {
                   <div className="gram-card-image">
                     <center>
                       <img
-                        src={`http://localhost:8000${post.static_url}`}
+                        src={`http://localhost:3003${post.static_url}`}
                         // id="img_{{_id}}"
                         alt=""
                         className="img-responsive"
@@ -132,8 +133,7 @@ export default function Chat() {
                       onClick="like('{{_id}}')"
                       id="{{_id}}"
                     >
-                      <i className="glyphicon glyphicon-thumbs-up"></i>
-                      {post.likes.length}
+                      <i className="far fa-thumbs-up"></i> {post.likes.length}
                     </button>
 
                     <input

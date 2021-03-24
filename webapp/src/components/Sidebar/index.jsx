@@ -101,7 +101,7 @@ export default function Sidbar() {
               {users.map((person) => (
                 <li key={person._id} className="list-group-item">
                   <img
-                    src={`http://localhost:8000${person.profile_pic}`}
+                    src={`http://localhost:3002${person.profile_pic}`}
                     className="logo"
                     alt="Profile"
                   />
