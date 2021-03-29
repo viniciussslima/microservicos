@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import Navbar from "../../components/Navbar";
 import Tabs from "../../components/Tabs";
 import { useAuth } from "../../contexts/Auth";
-import { requestAuthApi } from "../../requestApi";
+import { requestChatApi } from "../../requestApi";
 
 export default function Chat() {
   const { user } = useAuth();
@@ -12,7 +12,7 @@ export default function Chat() {
   useEffect(() => {
     const getUsers = async () => {
       try {
-        const response = await requestAuthApi.get("/users", {
+        const response = await requestChatApi.get("/rooms", {
           headers: { "x-access-token": user.token },
         });
         setUsers(response.data);

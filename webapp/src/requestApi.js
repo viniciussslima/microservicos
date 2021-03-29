@@ -10,6 +10,11 @@ export const requestFeedApi = axios.create({
   withCredentials: true,
 });
 
+export const requestChatApi = axios.create({
+  baseURL: "http://localhost:3004",
+  withCredentials: true,
+});
+
 export const requestApi = axios.create({
   baseURL: "http://localhost:8000",
   withCredentials: true,

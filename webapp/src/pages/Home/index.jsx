@@ -28,7 +28,6 @@ export default function Home() {
   const comment = async (postId, author, event) => {
     var key = event.which || event.keyCode;
     if (key === 13) {
-      console.log("uepa");
       try {
         await requestFeedApi.post(
           "/comment",

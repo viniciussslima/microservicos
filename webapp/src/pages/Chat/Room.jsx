@@ -1,20 +1,71 @@
 import React, { useEffect, useState } from "react";
+import io from "socket.io-client";
+
 import { useAuth } from "../../contexts/Auth";
 import { useLocation } from "react-router-dom";
 import Tabs from "../../components/Tabs";
+import { requestChatApi } from "../../requestApi";
 
 export default function Chat() {
   const { user } = useAuth();
 
   const location = useLocation();
 
-  const [index, setIndex] = useState(0);
+  const [room, setRoom] = useState();
+  const [friend, setFriend] = useState({});
+  const [socket, setSocket] = useState();
 
   useEffect(() => {
-    let id = location.pathname.split("/")[2];
-    let newIndex = user.people.findIndex((person) => person._id === id);
-    setIndex(newIndex);
+    const getRoom = async () => {
+      try {
+        const response = await requestChatApi.get(
+          `/room/${location.pathname.split("/")[2]}`,
+          {
+            headers: { "x-access-token": user.token },
+          }
+        );
+        setRoom(response.data.room);
+        setFriend(
+          response.data.room.users.find((element) => element._id !== user._id)
+        );
+      } catch (err) {
+        console.log(err);
+      }
+    };
+
+    getRoom();
   }, [location, user]);
+
+  useEffect(() => {
+    if (room) {
+      let newSocket = io("http://localhost:3004", {
+        query: `room=${room._id}&userId=${user._id}`,
+      });
+      setSocket(newSocket);
+
+      newSocket.on("new msg", (data) => {
+        let newRoom = { ...room };
+        newRoom.chats.push(data);
+        setRoom(newRoom);
+      });
+    }
+  }, [room, user]);
+
+  const sendMsg = (event) => {
+    if (socket && room) {
+      var key = event.which || event.keyCode;
+      if (key === 13) {
+        socket.emit("msg", { txt: event.target.value });
+        let newRoom = { ...room };
+        newRoom.chats.push({
+          txt: event.target.value,
+          by: user,
+          time: "10:50",
+        });
+        setRoom(newRoom);
+      }
+    }
+  };
 
   return (
     <>
@@ -26,48 +77,48 @@ export default function Chat() {
         <center>
           <b>
             <img
-              src={`http://localhost:8000${user.people[index].profile_pic}`}
+              src={`http://localhost:3002${friend.profile_pic}`}
               alt="profile-pic"
               className="logo"
             />
-            {user.people[index].username}
+            {friend.username}
           </b>
         </center>
         <br />
       </div>
-
+      <hr />
       <br />
       <div className="container" id="mainPage">
         <ul className="list-group">
-          {/* <% if(room.chats.length < 1) { %>
-        <div className="row">
-          <div className="col-md-12">
-            Send a message below!
+          <div className="row">
+            <div className="col-md-12">Send a message below!</div>
           </div>
-        </div>
-      <% } %> */}
-          {/* <% for(var i=0;i<room.chats.length;i++) {
-    if(room.chats[i].by && room.chats[i].by.profile_pic) { %>
-      <!--<div className="col-md-4">
-        <li className="list-group-item" style="display:inline-block">
-          <img className="logo" style=" border-radius: 50%;" src="<%= room.chats[i].by.profile_pic %>">  
-        </li>
-      </div>
-      <div className="col-md-6">
-        <li className="list-group-item" style="height:100%; width:100%"> 
-            <a style="text-decoration: underline" href="/u/<%= room.chats[i].by._id %>"><b><%= room.chats[i].by.username %></b></a> - <span data-time="<%= room.chats[i].time %>" className="timeSince"><%= timeSince(new Date(room.chats[i].time)) %></span><br> <%= room.chats[i].txt %>
-        </li>
-      </div>-->
-    
-    <ul className="list-group">
-      <li className="list-group-item">
-        <img className="logo" style="height: 30px;width: 30px;" src="<%= room.chats[i].by.profile_pic %>">
-        <a href="/u/<%= room.chats[i].by.username %>"><b><%= room.chats[i].by.username %></b></a><span data-time="<%= room.chats[i].time %>" className="timeSince float-right"><%= timeSince(new Date(room.chats[i].time)) %></span>
-        <br><br> <span className="msg"><%= room.chats[i].txt %></span> 
-        
-      </li>
-    </ul>
-  <% }} %> */}
+          {room &&
+            room.chats &&
+            room.chats.map((msg, index) => (
+              <ul key={index} className="list-group">
+                <li className="list-group-item">
+                  <img
+                    className="logo"
+                    style={{ height: 30, width: 30 }}
+                    src={`http://localhost:3002${friend.profile_pic}`}
+                    alt="friend-profile-pic"
+                  />
+                  <a href="/u/<%= room.chats[i].by.username %>">
+                    <b>{msg.by.username}</b>
+                  </a>
+                  <span
+                    data-time="<%= room.chats[i].time %>"
+                    className="timeSince float-right"
+                  >
+                    new Date(room.chats[i].time
+                  </span>
+                  <br />
+                  <br />
+                  <span className="msg">{msg.txt}</span>
+                </li>
+              </ul>
+            ))}
         </ul>
         <div style={{ display: "none" }} id="typing" className="row">
           <div className="col-md-12">
@@ -85,6 +136,7 @@ export default function Chat() {
           className="form-control"
           id="msg"
           placeholder="Type something..."
+          onKeyUp={sendMsg}
         />
       </div>
       <Tabs />
