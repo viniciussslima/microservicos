@@ -26,12 +26,14 @@ $ npm run dev
 Caso esteja em um ambiente WINDOWS para rodar a api utiliza-se:
 
 ```bash
+$ npm install
 $ npm run start:win
 ```
 
 Caso esteja em um ambiente UNIX utilize:
 
 ```bash
+$ npm install
 $ npm start
 ```
 
@@ -40,5 +42,6 @@ $ npm start
 Para executar o front-end utilize o comando abaixo dentro do diretório webapp:
 
 ```bash
-npm start
+$ npm install
+$ npm start
 ```
