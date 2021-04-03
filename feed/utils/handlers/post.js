@@ -9,6 +9,24 @@ mongoose.connect(require("../../config/app").db.connectionUri, {
   useNewUrlParser: true,
 });
 
+
+
+function createNew(obj, cb) {    
+      Post.findOne({ username: obj.username }).exec((err, user) => {
+        if (user) {
+          return cb(null, false);
+        } else {          
+          var newPost = new Post({
+            username: obj.username,
+            post: []            
+          });          
+          newPost.save((err, res) => {
+            return cb(err, res);
+          });
+        }
+      });    
+  }
+
   function findOne(obj, cb) {
     Post.findOne(obj).exec((err, post) => {
       if (err) return cb(err, false);
@@ -62,7 +80,8 @@ mongoose.connect(require("../../config/app").db.connectionUri, {
   }  
   
   // Expose all the api...
-  module.exports = {    
+  module.exports = { 
+    createNew: createNew,   
     findOne: findOne,
     getAll: getAll,    
     search: search,
