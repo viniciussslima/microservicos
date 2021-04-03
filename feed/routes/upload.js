@@ -10,15 +10,15 @@ const { cloudinary, isSetup } = require("../config/cloudinary");
 module.exports = (req, res, next) => {
   // Generate a random id
   var random_id = guid.raw();
-  var final_location, type;
-  if (req.files.filetoupload.name && isSetup) {
+  var final_location, type;  
+  if (req.files.filetoupload.name && isSetup) {    
     cloudinary.v2.uploader.upload(
       req.files.filetoupload.path,
       function (error, result) {
         if (!error) {
           final_location = result.url;
           type = mime.lookup(req.files.filetoupload.name).split("/")[1];
-          dbPost.findOne({ username: req.user.username }, (err, u) => {
+          dbPost.findOne({ username: req.user.username }, (err, u) => {            
             if (u != undefined) {
               u.posts.push({
                 _id: random_id,
@@ -32,7 +32,7 @@ module.exports = (req, res, next) => {
                 type: type,
                 createdAt: new Date(),
                 lastEditedAt: new Date(),
-              });
+              });              
               u.save((err) => {
                 if (err) throw err;
                 res.status(204).send();
@@ -53,29 +53,31 @@ module.exports = (req, res, next) => {
     var final_location = `/feeds/${req.user._id}_${random_id}${req.files.filetoupload.name}`;
     var type = mime.lookup(req.files.filetoupload.name).split("/")[1];
     mv(oldpath, newpath, function (err) {});
-    dbPost.findOne({ username: req.user.username }, (err, u) => {      
-      if (u) {
-        console.log(u);
-        u.posts.push({
-          _id: random_id,
-          author: req.user.username,
-          authorID: u._id,
-          static_url: final_location,
-          caption: req.body.caption,
-          category: req.body.type,
-          comments: [],
-          likes: [],
-          type: type,
-          createdAt: new Date(),
-          lastEditedAt: new Date(),
+      dbPost.findOne({username: req.user.username}, (err, p) =>{
+        console.log("teste");
+        console.log(p);
+        if(p){
+          p.posts.push({
+            _id: random_id,
+            author: req.user.username,
+            authorID: p._id,
+            static_url: final_location,
+            caption: req.body.caption,
+            category: req.body.type,
+            comments: [],
+            likes: [],
+            type: type,
+            createdAt: new Date(),
+            lastEditedAt: new Date(),
+          });
+        } else{
+          dbPost.createNew({username: req.user.username}, (err, p));          
+        }
+        p.save((err) => {
+          if (err) throw err;
+          res.status(204).send();
         });
-      } else {
-        return res.status(400).send(err);
-      }
-      u.save((err) => {
-        if (err) throw err;
-        res.status(204).send();
-      });
-    });
+      });                         
+          
   }
 };
