@@ -11,7 +11,7 @@ var userSchema = mongoose.Schema({
     bio: String, // A new bio
     dob: String, // 23rd july 2018
     followers: Array, // ["134wr3","1q2easd2"]
-    posts:Array, 
+    post:Array,    
     profile_pic:String, // /public/profile_pic/username/user.png
     chat_rooms:Array, // ["1234", "3456"]
     lastLogin:String, // 10 min ago

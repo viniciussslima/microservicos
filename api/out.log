@@ -1111,3 +1111,9 @@
 ::1 - - [24/Mar/2021:21:49:26 +0000] "GET /feeds/605ba3636f73d5527849eacd_9ad38142-86a3-c623-643e-2f0ca3ffc181Captura%20de%20tela%202020-11-07%20164106.jpg HTTP/1.1" 404 251
 ::1 - - [24/Mar/2021:21:49:37 +0000] "GET /images/logo/logo.png HTTP/1.1" 304 -
 ::1 - - [24/Mar/2021:21:49:37 +0000] "GET /feeds/605ba3636f73d5527849eacd_9ad38142-86a3-c623-643e-2f0ca3ffc181Captura%20de%20tela%202020-11-07%20164106.jpg HTTP/1.1" 404 251
+::ffff:127.0.0.1 - - [30/Mar/2021:16:31:47 +0000] "GET / HTTP/1.1" 204 -
+::ffff:127.0.0.1 - - [30/Mar/2021:16:31:50 +0000] "GET / HTTP/1.1" 204 -
+::ffff:127.0.0.1 - - [30/Mar/2021:16:40:00 +0000] "GET / HTTP/1.1" 204 -
+::ffff:127.0.0.1 - - [31/Mar/2021:19:42:08 +0000] "GET /images/logo/logo.png HTTP/1.1" 200 18902
+::ffff:127.0.0.1 - - [02/Apr/2021:22:01:05 +0000] "GET /images/logo/logo.png HTTP/1.1" 200 18902
+::ffff:127.0.0.1 - - [02/Apr/2021:22:04:58 +0000] "GET /images/logo/logo.png HTTP/1.1" 304 -
