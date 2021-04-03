@@ -1131,3 +1131,9 @@
 ::ffff:127.0.0.1 - - [03/Apr/2021:18:17:04 +0000] "GET /feeds/6064cd8a816e7e283869d067_ad53eaff-e0ad-8bc5-ce75-609bedbef45bWiener.png HTTP/1.1" 404 216
 ::ffff:127.0.0.1 - - [03/Apr/2021:18:20:50 +0000] "GET /feeds/6064cd8a816e7e283869d067_ad53eaff-e0ad-8bc5-ce75-609bedbef45bWiener.png HTTP/1.1" 404 216
 ::ffff:127.0.0.1 - - [03/Apr/2021:18:20:50 +0000] "GET /images/logo/logo.png HTTP/1.1" 304 -
+::ffff:127.0.0.1 - - [03/Apr/2021:18:46:15 +0000] "GET /images/logo/logo.png HTTP/1.1" 200 18902
+::ffff:127.0.0.1 - - [03/Apr/2021:18:48:51 +0000] "GET /images/logo/logo.png HTTP/1.1" 304 -
+::ffff:127.0.0.1 - - [03/Apr/2021:19:08:11 +0000] "GET /images/logo/logo.png HTTP/1.1" 200 18902
+::ffff:127.0.0.1 - - [03/Apr/2021:19:12:28 +0000] "GET /images/logo/logo.png HTTP/1.1" 304 -
+::ffff:127.0.0.1 - - [03/Apr/2021:19:12:28 +0000] "GET /feeds/6064cd8a816e7e283869d067_ad53eaff-e0ad-8bc5-ce75-609bedbef45bWiener.png HTTP/1.1" 404 216
+::ffff:127.0.0.1 - - [03/Apr/2021:19:12:54 +0000] "GET /images/logo/logo.png HTTP/1.1" 304 -

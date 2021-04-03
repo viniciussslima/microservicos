@@ -3,8 +3,7 @@ var dbPost = require("../utils/handlers/post");
 var ta = require("time-ago");
 
 module.exports = (req, res, next) => {  
-    dbPost.getAll((err, post) => {
-      console.log(post);
+    dbPost.getAll((err, post) => {      
       var posts = [];
       for (var i = 0; i < post.length; i++) {
         for (var j = 0; j < post[i].posts.length; j++) {

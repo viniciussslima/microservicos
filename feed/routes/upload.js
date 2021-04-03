@@ -53,9 +53,7 @@ module.exports = (req, res, next) => {
     var final_location = `/feeds/${req.user._id}_${random_id}${req.files.filetoupload.name}`;
     var type = mime.lookup(req.files.filetoupload.name).split("/")[1];
     mv(oldpath, newpath, function (err) {});
-      dbPost.findOne({username: req.user.username}, (err, p) =>{
-        console.log("teste");
-        console.log(p);
+      dbPost.findOne({username: req.user.username}, (err, p) =>{        
         if(p){
           p.posts.push({
             _id: random_id,
