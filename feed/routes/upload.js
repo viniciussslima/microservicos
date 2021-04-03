@@ -1,4 +1,5 @@
 var db = require("../utils/handlers/user");
+var dbPost = require("../utils/handlers/post");
 const fs = require("file-system");
 const mime = require("mime-types");
 var path = require("path");
@@ -17,7 +18,7 @@ module.exports = (req, res, next) => {
         if (!error) {
           final_location = result.url;
           type = mime.lookup(req.files.filetoupload.name).split("/")[1];
-          db.findOne({ username: req.user.username }, (err, u) => {
+          dbPost.findOne({ username: req.user.username }, (err, u) => {
             if (u != undefined) {
               u.posts.push({
                 _id: random_id,
@@ -52,8 +53,9 @@ module.exports = (req, res, next) => {
     var final_location = `/feeds/${req.user._id}_${random_id}${req.files.filetoupload.name}`;
     var type = mime.lookup(req.files.filetoupload.name).split("/")[1];
     mv(oldpath, newpath, function (err) {});
-    db.findOne({ username: req.user.username }, (err, u) => {
+    dbPost.findOne({ username: req.user.username }, (err, u) => {      
       if (u) {
+        console.log(u);
         u.posts.push({
           _id: random_id,
           author: req.user.username,

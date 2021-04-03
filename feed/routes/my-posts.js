@@ -1,7 +1,7 @@
-var db = require("../utils/handlers/user");
+var db = require("../utils/handlers/post");
 
 module.exports = (req, res, next) => {
-  db.findOne({ _id: req.session._id }, (err, { posts }) => {
+  db.findOne({ username: req.user.username }, (err, { posts }) => {
     res.send({
       posts,
     });

@@ -1,4 +1,4 @@
-var db = require("../utils/handlers/user");
+var db = require("../utils/handlers/post");
 const fs = require("file-system");
 
 module.exports = (req, res, next) => {

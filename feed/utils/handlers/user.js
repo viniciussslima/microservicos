@@ -47,8 +47,8 @@ function createNew(obj, cb) {
           lastname: obj.ln,
           dob: dob,
           bio: bio,
-          profile_pic: "/images/logo/logo.png",
-          posts: [],
+          post: [],
+          profile_pic: "/images/logo/logo.png",          
           followers: [],
           lastLogin: new Date(),
         });
