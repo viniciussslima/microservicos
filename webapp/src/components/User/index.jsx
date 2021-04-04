@@ -3,12 +3,16 @@ import Navbar from "../../components/Navbar";
 import Tabs from "../../components/Tabs";
 import { requestApi } from "../../requestApi";
 
-export default function User({ user, id }) {
+export default function User({ user, id, post }) {
   const follow = async () => {
     await requestApi.post("/api/v1/follow", {
       _id: user._id,
     });
-  };
+  };  
+
+  const posts = requestApi.post("/api/v1/posts", {
+    username: user.username
+  });
 
   return (
     <>
@@ -61,14 +65,15 @@ export default function User({ user, id }) {
 
       <div className="container">
         <center>
-          {user.posts.map((post) => (
+         
+          {(post) => (
             <img
               key={post._id}
               src={`http://localhost:3003${post.static_url}`}
               alt=""
               className="feed-view-img"
             />
-          ))}
+          )}
         </center>
       </div>
       {/* <div className="container">

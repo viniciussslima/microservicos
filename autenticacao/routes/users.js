@@ -9,7 +9,7 @@ module.exports = (req, res) => {
   jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
     if (err) return res.status(401).send({ message: "Unauthenticated user" });
     user = { username: decoded.username };
-    db.getAll((error, result) => {
+    db.getAll((error, result) => {      
       return res.status(200).send(result);
     });
   });

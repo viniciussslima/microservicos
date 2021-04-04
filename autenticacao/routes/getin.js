@@ -1,6 +1,6 @@
 const jwt = require("jsonwebtoken");
 
-const db = require("../utils/user");
+const db = require("../utils/auth");
 
 module.exports = (req, res) => {
   db.checkUser(req.body, (error, result) => {

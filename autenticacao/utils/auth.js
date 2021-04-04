@@ -1,4 +1,4 @@
-var User = require("../models/user");
+var Auth = require("../models/auth");
 var bcrypt = require("bcrypt-nodejs");
 const _ = require("lodash/_arrayIncludes");
 
@@ -27,23 +27,16 @@ function createNew(obj, cb) {
   if (checkSpace(obj.username)) {
     return cb(null, false);
   } else {
-    User.findOne({ username: obj.username }).exec((err, user) => {
+    Auth.findOne({ username: obj.username }).exec((err, user) => {       
       if (user) {
         return cb(null, false);
-      } else {
-        var bio = `Hey there! I'm ${obj.fn} ;)! Wish me on ${obj.day} ${obj.month}`;
-        var dob = obj.day + " " + obj.month + " " + obj.year;
-        var newUser = new User({
-          username: obj.username,
-          firstname: obj.fn,
-          lastname: obj.ln,
-          dob: dob,
-          bio: bio,
-          profile_pic: "/images/logo/logo.png",          
-          followers: [],          
+      } else {        
+        var newAuth = new Auth({
+          username: obj.username,          
+          lastLogin: new Date(),
         });
-        
-        newUser.save((err, res) => {
+        newAuth.password = newAuth.generateHash(obj.password);
+        newAuth.save((err, res) => {
           return cb(err, res);
         });
       }
@@ -64,7 +57,7 @@ usage:
 *****/
 
 function checkUser(obj, cb) {
-  User.findOne({ username: obj.username }).exec((err, user) => {
+    Auth.findOne({ username: obj.username }).exec((err, user) => {
     if (err) return cb(err, false);
     if (user) {
       bcrypt.compare(obj.password, user.password, (err, bool) => {
@@ -92,7 +85,7 @@ usage:
 *****/
 
 function findOne(obj, cb) {
-  User.findOne(obj).exec((err, user) => {
+    Auth.findOne(obj).exec((err, user) => {
     if (err) return cb(err, false);
     if (user) {
       return cb(err, user);
@@ -103,7 +96,7 @@ function findOne(obj, cb) {
 }
 
 function search(opt, cb) {
-  User.find({ username: { $gt: opt } }).exec((err, results) => {
+    Auth.find({ username: { $gt: opt } }).exec((err, results) => {
     if (err) return cb(err, false);
     if (results) {
       return cb(err, results);
@@ -122,7 +115,7 @@ usage:
 *****/
 
 function getAll(cb) {
-  User.find({}).exec((err, users) => {
+    Auth.find({}).exec((err, users) => {
     if (err) return cb(err, false);
     if (users) {
       return cb(null, users);
@@ -134,62 +127,20 @@ function getAll(cb) {
 
 function deleteOne(opt, cb) {
   //if(typeof opt !== Object) cb("Must be a javascript object.");
-  User.deleteOne(opt).exec((err, res) => {
+  Auth.deleteOne(opt).exec((err, res) => {
     if (err) return cb(err, null);
     else if (res.n == 0) {
       return cb(null, true);
     }
   });
 }
-function comment(user, comment, _id, cb) {
-  User.findOne(user).exec((err, obj) => {
-    if (!obj) return cb("Does not exist.", null);
-    console.log(obj);
-    for (var i = 0; i < obj.posts.length; i++) {
-      if (obj.posts[i]._id == _id) {
-        obj.posts[i].comments.push(comment);
-        obj.notifications.push({
-          msg: `@${comment.by} reacted to your post.`,
-          link: `/u/${comment.by}`,
-          time: new Date(),
-        });
-        obj = new User(obj);
-        obj.save((err, res) => {
-          return cb(err, res);
-        });
-      }
-    }
-  });
-}
-function like(user, like, _id, cb) {
-  console.log(user);
-  User.findOne(user).exec((err, obj) => {
-    if (!obj) return cb("Does not exist.", null);
-    //console.log(obj);
-    for (var i = 0; i < obj.posts.length; i++) {
-      if (obj.posts[i]._id == _id) {
-        obj.posts[i].likes.push(like.by);
-        obj.notifications.push({
-          msg: `@${like.by} liked your post.`,
-          link: `/u/${like.by}`,
-          time: new Date(),
-        });
-        obj = new User(obj);
-        obj.save((err) => {
-          cb(err, true);
-        });
-      }
-    }
-  });
-}
+
 
 // Expose all the api...
 module.exports = {
   createNew: createNew,
   checkUser: checkUser,
   findOne: findOne,
-  getAll: getAll,
-  comment: comment,
-  like: like,
+  getAll: getAll,  
   search: search,
 };
