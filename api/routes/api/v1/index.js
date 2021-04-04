@@ -3,6 +3,7 @@ var router = express.Router();
 var path = require("path");
 var tool = require("array-tools");
 var db = require("../../../utils/handlers/user");
+var dbPost = require("../../../utils/handlers/post");
 var User = require("../../../utils/models/user");
 var formParser = require("../../../utils/form-parser.js");
 var ig = require("../../../config/instagram");
@@ -41,6 +42,16 @@ router.post("/v1/like", function (req, res, next) {
       }
     }
   );
+});
+router.post("/v1/posts", function (req,res,next) {
+  dbPost.findOne({username : req.session.user}, (err, post) =>{
+    if(post){
+      return post;
+    }
+    else{
+      return [];
+    }
+  });
 });
 
 router.post("/v1/follow", function (req, res, next) {
