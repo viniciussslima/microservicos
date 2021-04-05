@@ -85,11 +85,7 @@ export default function Chat() {
       <br />
       <div className="container" id="mainPage">
         <ul className="list-group">
-          <div className="row">
-            <div className="col-md-12">Send a message below!</div>
-          </div>
-          {room &&
-            room.chats &&
+          {room && room.chats && room.chats.length ? (
             room.chats.map((msg, index) => (
               <ul key={index} className="list-group">
                 <li className="list-group-item">
@@ -99,13 +95,10 @@ export default function Chat() {
                     src={`http://localhost:3002${friend.profile_pic}`}
                     alt="friend-profile-pic"
                   />
-                  <a href="/u/<%= room.chats[i].by.username %>">
+                  <span>
                     <b>{msg.by.username}</b>
-                  </a>
-                  <span
-                    data-time="<%= room.chats[i].time %>"
-                    className="timeSince float-right"
-                  >
+                  </span>
+                  <span className="timeSince float-right">
                     {new Date(room.chats[index].time).toLocaleDateString()}
                   </span>
                   <br />
@@ -113,7 +106,12 @@ export default function Chat() {
                   <span className="msg">{msg.txt}</span>
                 </li>
               </ul>
-            ))}
+            ))
+          ) : (
+            <div className="row">
+              <div className="col-md-12">Send a message below!</div>
+            </div>
+          )}
         </ul>
         <div style={{ display: "none" }} id="typing" className="row">
           <div className="col-md-12">
