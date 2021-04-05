@@ -1,4 +1,5 @@
 var Auth = require("../models/auth");
+var User = require("../models/user");
 var bcrypt = require("bcrypt-nodejs");
 const _ = require("lodash/_arrayIncludes");
 
@@ -27,12 +28,12 @@ function createNew(obj, cb) {
   if (checkSpace(obj.username)) {
     return cb(null, false);
   } else {
-    Auth.findOne({ username: obj.username }).exec((err, user) => {       
+    Auth.findOne({ username: obj.username }).exec((err, user) => {
       if (user) {
         return cb(null, false);
-      } else {        
+      } else {
         var newAuth = new Auth({
-          username: obj.username,          
+          username: obj.username,
           lastLogin: new Date(),
         });
         newAuth.password = newAuth.generateHash(obj.password);
@@ -57,7 +58,7 @@ usage:
 *****/
 
 function checkUser(obj, cb) {
-    Auth.findOne({ username: obj.username }).exec((err, user) => {
+  Auth.findOne({ username: obj.username }).exec((err, user) => {
     if (err) return cb(err, false);
     if (user) {
       bcrypt.compare(obj.password, user.password, (err, bool) => {
@@ -85,7 +86,7 @@ usage:
 *****/
 
 function findOne(obj, cb) {
-    Auth.findOne(obj).exec((err, user) => {
+  User.findOne(obj).exec((err, user) => {
     if (err) return cb(err, false);
     if (user) {
       return cb(err, user);
@@ -96,7 +97,7 @@ function findOne(obj, cb) {
 }
 
 function search(opt, cb) {
-    Auth.find({ username: { $gt: opt } }).exec((err, results) => {
+  Auth.find({ username: { $gt: opt } }).exec((err, results) => {
     if (err) return cb(err, false);
     if (results) {
       return cb(err, results);
@@ -115,7 +116,7 @@ usage:
 *****/
 
 function getAll(cb) {
-    Auth.find({}).exec((err, users) => {
+  Auth.find({}).exec((err, users) => {
     if (err) return cb(err, false);
     if (users) {
       return cb(null, users);
@@ -135,12 +136,11 @@ function deleteOne(opt, cb) {
   });
 }
 
-
 // Expose all the api...
 module.exports = {
   createNew: createNew,
   checkUser: checkUser,
   findOne: findOne,
-  getAll: getAll,  
+  getAll: getAll,
   search: search,
 };
