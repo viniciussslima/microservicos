@@ -16,7 +16,7 @@ export default function User({ user, id }) {
       <br />
       <div className="container" id="mainPage">
         <img
-          src={`http://localhost:8000${user.profile_pic}`}
+          src={`http://localhost:3002${user.profile_pic}`}
           alt="profile-pic"
           className="logo"
         />
@@ -64,7 +64,7 @@ export default function User({ user, id }) {
           {user.posts.map((post) => (
             <img
               key={post._id}
-              src={`http://localhost:8000${post.static_url}`}
+              src={`http://localhost:3003${post.static_url}`}
               alt=""
               className="feed-view-img"
             />

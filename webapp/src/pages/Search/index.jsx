@@ -60,7 +60,7 @@ export default function Search() {
             {list.map((person, index) => (
               <li key={index} className="list-group-item">
                 <img
-                  src={`http://localhost:8000${person.profile_pic}`}
+                  src={`http://localhost:3002${person.profile_pic}`}
                   alt="profile-pic"
                   className="logo"
                 />

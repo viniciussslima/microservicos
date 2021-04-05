@@ -29,7 +29,7 @@ function sendMsg(socket, chat) {
     room.chats.push({ txt: chat.txt, by: user, time });
     console.log({ txt: chat.txt, by: user, time });
     room.save((err, obj) => {
-      sio.to(socket.room).emit("new msg", {
+      sio.to(socket.roomId).emit("new msg", {
         txt: chat.txt,
         by: user,
         time,

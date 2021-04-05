@@ -6,6 +6,8 @@ import { useLocation } from "react-router-dom";
 import Tabs from "../../components/Tabs";
 import { requestChatApi } from "../../requestApi";
 
+let socket;
+
 export default function Chat() {
   const { user } = useAuth();
 
@@ -13,7 +15,6 @@ export default function Chat() {
 
   const [room, setRoom] = useState();
   const [friend, setFriend] = useState({});
-  const [socket, setSocket] = useState();
 
   useEffect(() => {
     const getRoom = async () => {
@@ -38,12 +39,12 @@ export default function Chat() {
 
   useEffect(() => {
     if (room) {
-      let newSocket = io("http://localhost:3004", {
+      socket = io("http://localhost:3004", {
         query: `room=${room._id}&userId=${user._id}`,
       });
-      setSocket(newSocket);
 
-      newSocket.on("new msg", (data) => {
+      socket.once("new msg", (data) => {
+        console.log(data);
         let newRoom = { ...room };
         newRoom.chats.push(data);
         setRoom(newRoom);
@@ -56,13 +57,13 @@ export default function Chat() {
       var key = event.which || event.keyCode;
       if (key === 13) {
         socket.emit("msg", { txt: event.target.value });
-        let newRoom = { ...room };
-        newRoom.chats.push({
-          txt: event.target.value,
-          by: user,
-          time: "10:50",
-        });
-        setRoom(newRoom);
+        // let newRoom = { ...room };
+        // newRoom.chats.push({
+        //   txt: event.target.value,
+        //   by: user,
+        //   time: "10:50",
+        // });
+        // setRoom(newRoom);
       }
     }
   };
@@ -111,7 +112,7 @@ export default function Chat() {
                     data-time="<%= room.chats[i].time %>"
                     className="timeSince float-right"
                   >
-                    new Date(room.chats[i].time
+                    {new Date(room.chats[index].time).toLocaleDateString()}
                   </span>
                   <br />
                   <br />

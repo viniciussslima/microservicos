@@ -120,7 +120,7 @@ export default function Home() {
                 />
                 <a
                   className="gram-card-user-name"
-                  href={`/u/${obj.post.authorID}`}
+                  href={`/u/${obj.post.author}`}
                 >
                   {obj.post.author}
                 </a>

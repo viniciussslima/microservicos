@@ -53,7 +53,7 @@ export default function Upload() {
           <div className="gram-card">
             <div className="gram-card-header">
               <img
-                src={`http://localhost:8000${user.profile_pic}`}
+                src={`http://localhost:3002${user.profile_pic}`}
                 alt="profile-pic"
                 className="gram-card-user-image"
               />

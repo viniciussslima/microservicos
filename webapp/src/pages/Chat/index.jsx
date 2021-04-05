@@ -36,7 +36,7 @@ export default function Chat() {
             <li key={user._id} className="list-group-item">
               <img
                 className="logo"
-                src={`http://localhost:8000${user.profile_pic}`}
+                src={`http://localhost:3002${user.profile_pic}`}
                 alt=""
               />
               <a href={`/chat/${user._id}`} style={{ color: "black" }}>

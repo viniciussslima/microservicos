@@ -2,3 +2,4 @@ node_modules/
 workspace.code-workspace
 /api/public/feeds/
 /feed/public/feeds/
+/docker/mongo
