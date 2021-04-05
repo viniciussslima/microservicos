@@ -41,6 +41,7 @@ module.exports = (req, res, next) => {
               dbPost.createNew(
                 {
                   username: req.user.username,
+                  profile_pic: "/images/logo/logo.png",
                   posts: [
                     {
                       _id: random_id,
@@ -102,6 +103,7 @@ module.exports = (req, res, next) => {
         dbPost.createNew(
           {
             username: req.user.username,
+            profile_pic: "/images/logo/logo.png",
             posts: [
               {
                 _id: random_id,
