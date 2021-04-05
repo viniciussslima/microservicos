@@ -50,7 +50,6 @@ export default function Home() {
           by: user.username,
           text: event.target.value,
         });
-        console.log(post.post.comments);
 
         setPosts(newPosts);
       } catch (err) {
