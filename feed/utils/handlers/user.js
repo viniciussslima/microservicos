@@ -1,6 +1,7 @@
 // utils/handlers/user.js
 var mongoose = require("mongoose");
 var User = require("../models/user");
+var Post = require("../models/post");
 var bcrypt = require("bcrypt-nodejs");
 const a = require("array-tools");
 const _ = require("lodash/_arrayIncludes");
@@ -48,7 +49,7 @@ function createNew(obj, cb) {
           dob: dob,
           bio: bio,
           post: [],
-          profile_pic: "/images/logo/logo.png",          
+          profile_pic: "/images/logo/logo.png",
           followers: [],
           lastLogin: new Date(),
         });
@@ -132,7 +133,7 @@ usage:
 *****/
 
 function getAll(cb) {
-  User.find({}).exec((err, users) => {
+  Post.find({}).exec((err, users) => {
     if (err) return cb(err, false);
     if (users) {
       return cb(null, users);
