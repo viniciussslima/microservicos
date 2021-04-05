@@ -12,7 +12,7 @@ export default function Upload() {
   const [file, setFile] = useState();
   const [preview, setPreview] = useState();
   const [caption, setCaption] = useState("");
-  const [type, setType] = useState("");
+  const [type, setType] = useState("thoughts");
 
   const handleChange = (event) => {
     event.preventDefault();
@@ -107,9 +107,9 @@ export default function Upload() {
                   name="type"
                   onChange={(event) => setType(event.target.value)}
                 >
-                  <option>thoughts</option>
-                  <option>moments</option>
-                  <option>events</option>
+                  <option value="thoughts">thoughts</option>
+                  <option value="moments">moments</option>
+                  <option value="events">events</option>
                 </select>
               </p>
 
