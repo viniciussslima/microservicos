@@ -3,7 +3,7 @@
 /**
  * Module dependencies.
  */
-process.title = "spruce";
+process.title = "spruce/api";
 
 var app = require("../app");
 var io = require("socket.io");
@@ -92,7 +92,7 @@ function onListening() {
 
 module.exports = { sio, server };
 
-if (process.argv.find(a => a == "--app")) {
+if (process.argv.find((a) => a == "--app")) {
   require("../utils/handlers/app_socket");
 }
 

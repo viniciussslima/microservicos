@@ -1,3 +1,5 @@
+process.title = "spruce/auth";
+
 require("dotenv").config();
 
 var mongoose = require("mongoose");

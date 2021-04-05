@@ -1,3 +1,5 @@
+process.title = "spruce/feed";
+
 require("dotenv").config();
 
 var mongoose = require("mongoose");
