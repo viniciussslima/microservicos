@@ -8,11 +8,7 @@ export default function User({ user, id, post }) {
     await requestApi.post("/api/v1/follow", {
       _id: user._id,
     });
-  };  
-
-  const posts = requestApi.post("/api/v1/posts", {
-    username: user.username
-  });
+  };
 
   return (
     <>
@@ -65,7 +61,6 @@ export default function User({ user, id, post }) {
 
       <div className="container">
         <center>
-         
           {(post) => (
             <img
               key={post._id}
