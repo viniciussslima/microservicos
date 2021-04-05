@@ -57,13 +57,7 @@ export default function Chat() {
       var key = event.which || event.keyCode;
       if (key === 13) {
         socket.emit("msg", { txt: event.target.value });
-        // let newRoom = { ...room };
-        // newRoom.chats.push({
-        //   txt: event.target.value,
-        //   by: user,
-        //   time: "10:50",
-        // });
-        // setRoom(newRoom);
+        event.target.value = "";
       }
     }
   };
