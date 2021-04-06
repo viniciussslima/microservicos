@@ -20,7 +20,6 @@ export default function Chat() {
             headers: { "x-access-token": user.token },
           }
         );
-        console.log(response.data);
         setUsers(response.data.people);
       } catch (err) {
         console.log(err);
@@ -58,16 +57,6 @@ export default function Chat() {
                       {post.author}
                     </a>
                     <div className="dropdown gram-card-time">
-                      {/* <a
-                        href="#"
-                        className="dropdown-toggle"
-                        data-toggle="dropdown"
-                        role="button"
-                        aria-haspopup="true"
-                        aria-expanded="false"
-                      >
-                        <i className="glyphicon glyphicon-option-vertical"></i>
-                      </a> */}
                       <ul className="dropdown-menu dropdown-menu-right">
                         <li>
                           <a href="<%= people[i].posts[z].static_url %>">
@@ -108,21 +97,17 @@ export default function Chat() {
                     <br />
 
                     <div className="comments-div">
-                      <div>
-                        {post.comments.map((comment) => (
-                          <React.Fragment
-                            key={`${person._id}-${post._id}-${comment._id}`}
-                          >
-                            <a
-                              className="user-comment"
-                              href="/user/<%= people[i].posts[z].comments[c].by %>"
-                            >
-                              {comment.by}
-                            </a>
-                            {comment.text}
-                          </React.Fragment>
-                        ))}
-                      </div>
+                      {post.comments.map((comment) => (
+                        <React.Fragment
+                          key={`${person._id}-${post._id}-${comment._id}`}
+                        >
+                          <a className="user-comment" href={`/u/${comment.by}`}>
+                            {comment.by}{" "}
+                          </a>
+                          {comment.text}
+                          <br />
+                        </React.Fragment>
+                      ))}
                     </div>
                     <hr />
                   </div>
