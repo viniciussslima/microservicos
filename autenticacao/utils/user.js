@@ -39,10 +39,10 @@ function createNew(obj, cb) {
           lastname: obj.ln,
           dob: dob,
           bio: bio,
-          profile_pic: "/images/logo/logo.png",          
-          followers: [],          
+          profile_pic: "/images/logo/logo.png",
+          followers: [],
         });
-        
+
         newUser.save((err, res) => {
           return cb(err, res);
         });
@@ -103,10 +103,17 @@ function findOne(obj, cb) {
 }
 
 function search(opt, cb) {
-  User.find({ username: { $gt: opt } }).exec((err, results) => {
+  var regx = "^" + opt + ".*";
+  User.find({
+    $or: [
+      { username: { $regex: regx } },
+      { firstname: { $regex: regx } },
+      { lastname: { $regex: regx } },
+    ],
+  }).exec((err, all) => {
     if (err) return cb(err, false);
-    if (results) {
-      return cb(err, results);
+    if (all) {
+      return cb(null, all);
     } else {
       return cb(null, false);
     }

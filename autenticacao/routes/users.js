@@ -1,5 +1,4 @@
 const jwt = require("jsonwebtoken");
-var ta = require("time-ago");
 
 const db = require("../utils/user");
 
@@ -9,8 +8,13 @@ module.exports = (req, res) => {
   jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
     if (err) return res.status(401).send({ message: "Unauthenticated user" });
     user = { username: decoded.username };
-    db.getAll((error, result) => {      
-      return res.status(200).send(result);
+    if (req.query.text) {
+      return db.search(req.query.text, (error, result) => {
+        res.status(200).send(result);
+      });
+    }
+    return db.getAll((error, result) => {
+      res.status(200).send(result);
     });
   });
 };
