@@ -153,44 +153,38 @@ function deleteOne(opt, cb) {
   });
 }
 function comment(user, comment, _id, cb) {
-  User.findOne(user).exec((err, obj) => {
+  Post.findOne(user).exec((err, obj) => {
     if (!obj) return cb("Does not exist.", null);
-    console.log(obj);
-    for (var i = 0; i < obj.posts.length; i++) {
-      if (obj.posts[i]._id == _id) {
-        obj.posts[i].comments.push(comment);
-        obj.notifications.push({
-          msg: `@${comment.by} reacted to your post.`,
-          link: `/u/${comment.by}`,
-          time: new Date(),
-        });
-        obj = new User(obj);
-        obj.save((err, res) => {
-          return cb(err, res);
-        });
-      }
+    let post = obj.posts.find((post) => post._id === _id);
+    if (post) {
+      post.comments.push(comment);
+      obj = new Post(obj);
+      return obj.save((err, res) => {
+        if (err) {
+          return cb(err, false);
+        }
+        return cb(null, true);
+      });
     }
+    return cb(err, false);
   });
 }
+
 function like(user, like, _id, cb) {
-  console.log(user);
-  User.findOne(user).exec((err, obj) => {
+  Post.findOne(user).exec((err, obj) => {
     if (!obj) return cb("Does not exist.", null);
-    //console.log(obj);
-    for (var i = 0; i < obj.posts.length; i++) {
-      if (obj.posts[i]._id == _id) {
-        obj.posts[i].likes.push(like.by);
-        obj.notifications.push({
-          msg: `@${like.by} liked your post.`,
-          link: `/u/${like.by}`,
-          time: new Date(),
-        });
-        obj = new User(obj);
-        obj.save((err) => {
-          cb(err, true);
-        });
-      }
+    let post = obj.posts.find((post) => post._id === _id);
+    if (post) {
+      post.likes.push(like.by);
+      obj = new Post(obj);
+      return obj.save((err) => {
+        if (err) {
+          return cb(err, false);
+        }
+        return cb(null, true);
+      });
     }
+    return cb(err, false);
   });
 }
 
