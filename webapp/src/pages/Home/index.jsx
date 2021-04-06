@@ -124,16 +124,6 @@ export default function Home() {
                   {obj.post.author}
                 </a>
                 <div className="dropdown gram-card-time">
-                  {/* <a
-                    href="#"
-                    className="dropdown-toggle"
-                    data-toggle="dropdown"
-                    role="button"
-                    aria-haspopup="true"
-                    aria-expanded="false"
-                  >
-                    <i className="glyphicon glyphicon-option-vertical"></i>
-                  </a> */}
                   <ul className="dropdown-menu dropdown-menu-right">
                     <li>
                       <a href={obj.post.static_url}>

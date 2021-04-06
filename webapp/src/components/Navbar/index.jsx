@@ -23,14 +23,6 @@ export default function Navbar() {
           <a href="/u" className="btn btn-link hidden-xs">
             <i className="fa fa-lg fa-search pills"></i>
           </a>
-          <button
-            style={{ outline: "none" }}
-            type="button"
-            className="btn btn-link"
-            id="sidebarToggle"
-          >
-            <i className="fa fa-lg fa-align-left pills"></i>
-          </button>
         </div>
       </div>
     </>

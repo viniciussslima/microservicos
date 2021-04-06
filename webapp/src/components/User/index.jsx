@@ -1,15 +1,8 @@
 import React from "react";
 import Navbar from "../../components/Navbar";
 import Tabs from "../../components/Tabs";
-import { requestApi } from "../../requestApi";
 
 export default function User({ user, id, post }) {
-  const follow = async () => {
-    await requestApi.post("/api/v1/follow", {
-      _id: user._id,
-    });
-  };
-
   return (
     <>
       <Navbar />
@@ -40,12 +33,6 @@ export default function User({ user, id, post }) {
           </div>
         ) : (
           <div className="float-right margin-right-10">
-            <button
-              className="btn btn-action btn-sm btn-default"
-              onClick={follow}
-            >
-              Follow
-            </button>
             <a
               className="btn btn-action btn-sm btn-danger"
               href={`/chat/${user._id}`}
@@ -71,21 +58,6 @@ export default function User({ user, id, post }) {
           )}
         </center>
       </div>
-      {/* <div className="container">
-        <br />
-        <br />
-        Developer mode :
-        <input type="checkbox" name="dev-mode" id="dev-mode" />
-        <br />
-        <span className="bio" id="dev-key" style={{ display: "none" }}>
-          Enter developer key to verify your account:
-          <form onSubmit="window.location.href = '/developer/verify/' + this.getElementsByTagName('input')[0].value; return false">
-            <input className="form-control" />
-          </form>
-        </span>
-        <br />
-        <br />
-      </div> */}
       <Tabs />
     </>
   );
