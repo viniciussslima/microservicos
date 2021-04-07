@@ -4,7 +4,7 @@ import { useAuth } from "../../contexts/Auth";
 import Navbar from "../../components/Navbar";
 import { requestFeedApi } from "../../requestApi";
 
-export default function Chat() {
+export default function Category() {
   const { user } = useAuth();
 
   const location = useLocation();
@@ -20,7 +20,7 @@ export default function Chat() {
             headers: { "x-access-token": user.token },
           }
         );
-        console.log(response.data);
+        console.log(response.data.people);
         setUsers(response.data.people);
       } catch (err) {
         console.log(err);
@@ -29,6 +29,74 @@ export default function Chat() {
 
     getUsers();
   }, [user, location]);
+
+  const comment = async (postId, author, event) => {
+    var key = event.which || event.keyCode;
+    if (key === 13 && event.target.value.length) {
+      try {
+        await requestFeedApi.post(
+          "/comment",
+          {
+            author: author,
+            by: user.username,
+            text: event.target.value,
+            _id: postId,
+          },
+          {
+            headers: { "x-access-token": user.token },
+          }
+        );
+
+        const newUsers = [...users];
+
+        let postIndex = 0;
+        let post = newUsers.find((user) =>
+          user.posts.find((post, index) => {
+            postIndex = index;
+            return post._id === postId;
+          })
+        );
+        console.log(post);
+        post.posts[postIndex].comments.push({
+          author: author,
+          by: user.username,
+          text: event.target.value,
+        });
+
+        setUsers(newUsers);
+
+        event.target.value = "";
+      } catch (err) {
+        console.log(err);
+      }
+    }
+  };
+
+  const like = async (postId, author, likes) => {
+    try {
+      await requestFeedApi.post(
+        "/like",
+        {
+          author: author,
+          _id: postId,
+        },
+        {
+          headers: { "x-access-token": user.token },
+        }
+      );
+
+      const newUsers = [...users];
+
+      let post = newUsers.find((user) =>
+        user.posts.find((post) => post._id === postId)
+      );
+      post.posts.likes.push(user.username);
+
+      setUsers(newUsers);
+    } catch (err) {
+      console.log(err);
+    }
+  };
 
   return (
     <>
@@ -42,7 +110,6 @@ export default function Chat() {
         {users.map((person) =>
           person.posts.map((post) => {
             if (post.category === location.pathname.split("/")[2]) {
-              console.log(post);
               return (
                 <div key={`${person._id}-${post._id}`} className="gram-card">
                   <div className="gram-card-header">
@@ -50,24 +117,15 @@ export default function Chat() {
                       src={`http://localhost:3002${person.profile_pic}`}
                       alt="profile-pic"
                       className="gram-card-user-image"
+                      style={{ marginRight: 10 }}
                     />
                     <a
-                      className="gram-card-user-name"
-                      href="/u/<%= people[i].posts[z].author %>"
+                      className="gram-card-content-user"
+                      href={`/u/${post.author}`}
                     >
-                      {post.author}
+                      {post.author}{" "}
                     </a>
                     <div className="dropdown gram-card-time">
-                      {/* <a
-                        href="#"
-                        className="dropdown-toggle"
-                        data-toggle="dropdown"
-                        role="button"
-                        aria-haspopup="true"
-                        aria-expanded="false"
-                      >
-                        <i className="glyphicon glyphicon-option-vertical"></i>
-                      </a> */}
                       <ul className="dropdown-menu dropdown-menu-right">
                         <li>
                           <a href="<%= people[i].posts[z].static_url %>">
@@ -84,7 +142,6 @@ export default function Chat() {
                     <center>
                       <img
                         src={`http://localhost:3003${post.static_url}`}
-                        // id="img_{{_id}}"
                         alt=""
                         className="img-responsive"
                       />
@@ -94,9 +151,9 @@ export default function Chat() {
                     <p>
                       <a
                         className="gram-card-content-user"
-                        href="/u/undefined_void"
+                        href={`/u/${post.author}`}
                       >
-                        {post.author}
+                        {post.author}{" "}
                       </a>
                       {post.caption}
                       <span className="label label-info">{post.category}</span>
@@ -108,30 +165,26 @@ export default function Chat() {
                     <br />
 
                     <div className="comments-div">
-                      <div>
-                        {post.comments.map((comment) => (
-                          <React.Fragment
-                            key={`${person._id}-${post._id}-${comment._id}`}
-                          >
-                            <a
-                              className="user-comment"
-                              href="/user/<%= people[i].posts[z].comments[c].by %>"
-                            >
-                              {comment.by}
-                            </a>
-                            {comment.text}
-                          </React.Fragment>
-                        ))}
-                      </div>
+                      {post.comments.map((comment, index) => (
+                        <React.Fragment
+                          key={`${person._id}-${post._id}-${index}`}
+                        >
+                          <a className="user-comment" href={`/u/${comment.by}`}>
+                            {comment.by}{" "}
+                          </a>
+                          {comment.text}
+                          <br />
+                        </React.Fragment>
+                      ))}
                     </div>
                     <hr />
                   </div>
                   <div className="gram-card-footer">
                     <button
-                      className="footer-action-icons likes btn btn-link non-hoverable"
-                      //  {{#if disabled}}disabled="true"{{/if}}
-                      onClick="like('{{_id}}')"
-                      id="{{_id}}"
+                      disabled={post.likes.includes(user.username)}
+                      onClick={() => like(post._id, post.author, post.likes)}
+                      className="footer-action-icons likes btn btn-link non-hoverable like-button-box"
+                      id={`${post._id}-like`}
                     >
                       <i className="far fa-thumbs-up"></i> {post.likes.length}
                     </button>
@@ -140,13 +193,10 @@ export default function Chat() {
                       className="comments-input"
                       type="text"
                       placeholder="Comment here..."
+                      onKeyUp={(event) =>
+                        comment(post._id, post.author, event, post.comments)
+                      }
                     />
-                    <button
-                      className="footer-action-icons btn btn-link"
-                      // onClick="comment('{{_id}}')"
-                    >
-                      <i className="glyphicon glyphicon-comment"></i>
-                    </button>
                   </div>
                 </div>
               );

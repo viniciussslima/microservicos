@@ -18,16 +18,22 @@ module.exports = (req, res) => {
             room.users[1]._id.toString() === req.user._id.toString())
       );
       if (room) {
+        room.users[0] = req.user;
+        room.users[1] = user;
+
         res.status(200).send({ room });
         req.teste = room;
       } else {
         var newChatRoom = new Room({
-          users: [req.user, user],
+          users: [req.user._id, user._id],
           chats: [],
         });
         newChatRoom.save((err, done) => {
           res.send({
-            room: done,
+            room: {
+              users: [req.user, user],
+              chats: [],
+            },
           });
         });
       }

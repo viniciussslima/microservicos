@@ -1,6 +1,7 @@
 const jwt = require("jsonwebtoken");
 
-const db = require("../utils/user");
+const db = require("../utils/auth");
+const User = require("../utils/user");
 
 module.exports = (req, res) => {
   db.checkUser(req.body, (error, result) => {
@@ -9,14 +10,17 @@ module.exports = (req, res) => {
         error: "Bad username or password.",
       });
     } else {
-      result.lastLogin = new Date();
-      result.save(() => {
-        let token = jwt.sign(
-          { username: req.body.username },
-          process.env.JWT_SECRET
-        );
-        res.status(200).send({
-          token,
+      User.findOne({ username: req.body.username }, (error, user) => {
+        user.lastLogin = new Date();
+
+        user.save(() => {
+          let token = jwt.sign(
+            { username: req.body.username },
+            process.env.JWT_SECRET
+          );
+          res.status(200).send({
+            token,
+          });
         });
       });
     }

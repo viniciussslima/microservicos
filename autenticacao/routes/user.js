@@ -1,7 +1,7 @@
 const jwt = require("jsonwebtoken");
 var ta = require("time-ago");
 
-const db = require("../utils/user");
+const db = require("../utils/auth");
 
 module.exports = (req, res) => {
   const token = req.headers["x-access-token"];
@@ -9,7 +9,7 @@ module.exports = (req, res) => {
   jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
     if (err) return res.status(401).send({ message: "Unauthenticated user" });
     user = { username: decoded.username };
-    db.findOne(user, (error, result) => {
+    db.findOne(user, (error, result) => {      
       if (!result) {
         return res.status(400).send({
           error: "Bad username",

@@ -27,7 +27,7 @@ export default function Home() {
 
   const comment = async (postId, author, event) => {
     var key = event.which || event.keyCode;
-    if (key === 13) {
+    if (key === 13 && event.target.value.length) {
       try {
         await requestFeedApi.post(
           "/comment",
@@ -50,9 +50,10 @@ export default function Home() {
           by: user.username,
           text: event.target.value,
         });
-        console.log(post.post.comments);
 
         setPosts(newPosts);
+
+        event.target.value = "";
       } catch (err) {
         console.log(err);
       }
@@ -125,16 +126,6 @@ export default function Home() {
                   {obj.post.author}
                 </a>
                 <div className="dropdown gram-card-time">
-                  {/* <a
-                    href="#"
-                    className="dropdown-toggle"
-                    data-toggle="dropdown"
-                    role="button"
-                    aria-haspopup="true"
-                    aria-expanded="false"
-                  >
-                    <i className="glyphicon glyphicon-option-vertical"></i>
-                  </a> */}
                   <ul className="dropdown-menu dropdown-menu-right">
                     <li>
                       <a href={obj.post.static_url}>
@@ -198,7 +189,7 @@ export default function Home() {
                 <p>
                   <a
                     className="gram-card-content-user"
-                    href="/u/undefined_void"
+                    href={`/u/${obj.post.author}`}
                   >
                     {obj.post.author}{" "}
                   </a>

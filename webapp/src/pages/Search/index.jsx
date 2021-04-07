@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useAuth } from "../../contexts/Auth";
 import Navbar from "../../components/Navbar";
 import Tabs from "../../components/Tabs";
-import { requestAuthApi, requestApi } from "../../requestApi";
+import { requestAuthApi } from "../../requestApi";
 
 export default function Search() {
   const { user } = useAuth();
@@ -24,8 +24,8 @@ export default function Search() {
   }, [user]);
 
   const updateList = async (query) => {
-    let response = await requestApi.get("/api/v1/search", {
-      q: query,
+    let response = await requestAuthApi.get(`/users/?text=${query}`, {
+      headers: { "x-access-token": user.token },
     });
 
     setList(response.data);

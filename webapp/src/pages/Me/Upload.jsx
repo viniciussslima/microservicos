@@ -123,7 +123,7 @@ export default function Upload() {
                 className="footer-action-icons likes btn btn-link non-hoverable"
                 disabled
               >
-                <i className="glyphicon glyphicon-thumbs-up"></i> 10
+                <i className="far fa-thumbs-up"></i> 10
               </button>
 
               <input
