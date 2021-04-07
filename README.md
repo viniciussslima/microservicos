@@ -1,5 +1,19 @@
 # SPRUCE
 
+Projeto da diciplina DIM0532 - TÓPICOS ESPECIAIS EM ENGENHARIA DE SOFTWARE II
+
+## Alunos:
+
+- Fagner Morais Dias
+- Hudson Bruno Macedo Alves
+- Vinicius Santos Silva de Lima
+
+## Descrição
+
+O projeto consiste na migração de um sistema monólito para um sistema de micro serviços.
+
+O sistema escolhido para fazer a migração é o <a href="https://github.com/littledivy/spruce"> Spruce </a>.
+
 ## Dependências
 
 Para rodar o projeto é necessário ter um node, npm e mongoDB (ou docker-compose) instalados.
@@ -47,4 +61,5 @@ $ npm start
 ```
 
 ## Versão online
+
 <a href="https://spruce-viniciussslima.vercel.app"> https://spruce-viniciussslima.vercel.app/</a>
