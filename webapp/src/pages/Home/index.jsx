@@ -27,7 +27,7 @@ export default function Home() {
 
   const comment = async (postId, author, event) => {
     var key = event.which || event.keyCode;
-    if (key === 13) {
+    if (key === 13 && event.target.value.length) {
       try {
         await requestFeedApi.post(
           "/comment",
@@ -52,6 +52,8 @@ export default function Home() {
         });
 
         setPosts(newPosts);
+
+        event.target.value = "";
       } catch (err) {
         console.log(err);
       }
@@ -187,7 +189,7 @@ export default function Home() {
                 <p>
                   <a
                     className="gram-card-content-user"
-                    href="/u/undefined_void"
+                    href={`/u/${obj.post.author}`}
                   >
                     {obj.post.author}{" "}
                   </a>

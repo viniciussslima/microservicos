@@ -44,6 +44,17 @@ function search(opt, cb) {
   });
 }
 
+function findByUsername(username, cb) {
+  Post.findOne({ username }).exec((err, posts) => {
+    if (err) return cb(err, false);
+    if (posts) {
+      return cb(null, posts);
+    } else {
+      return cb(null, false);
+    }
+  });
+}
+
 /*****
   usage:
      getAll((error, result) => {
@@ -79,4 +90,5 @@ module.exports = {
   findOne: findOne,
   getAll: getAll,
   search: search,
+  findByUsername,
 };

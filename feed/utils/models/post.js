@@ -6,7 +6,6 @@ var bcrypt = require("bcrypt-nodejs");
 
 var postSchema = mongoose.Schema({
   username: String,
-  profile_pic: String,
   posts: Array,
 });
 

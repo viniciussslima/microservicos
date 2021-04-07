@@ -1,8 +1,30 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import Navbar from "../../components/Navbar";
 import Tabs from "../../components/Tabs";
+import { useAuth } from "../../contexts/Auth";
+import { requestFeedApi } from "../../requestApi";
 
-export default function User({ user, id, post }) {
+export default function User({ user, id }) {
+  const { user: authUser } = useAuth();
+
+  const [posts, setPosts] = useState([]);
+
+  useEffect(() => {
+    const getPosts = async () => {
+      console.log(user);
+      try {
+        const response = await requestFeedApi.get(`/posts/${user.username}`, {
+          headers: { "x-access-token": authUser.token },
+        });
+        setPosts(response.data.posts);
+      } catch (err) {
+        console.log(err);
+      }
+    };
+
+    getPosts();
+  }, [authUser, user]);
+
   return (
     <>
       <Navbar />
@@ -48,14 +70,15 @@ export default function User({ user, id, post }) {
 
       <div className="container">
         <center>
-          {(post) => (
-            <img
-              key={post._id}
-              src={`http://localhost:3003${post.static_url}`}
-              alt=""
-              className="feed-view-img"
-            />
-          )}
+          {posts &&
+            posts.map((post) => (
+              <img
+                key={post._id}
+                src={`http://localhost:3003${post.static_url}`}
+                alt=""
+                className="feed-view-img"
+              />
+            ))}
         </center>
       </div>
       <Tabs />

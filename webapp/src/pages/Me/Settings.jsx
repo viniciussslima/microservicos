@@ -72,6 +72,7 @@ export default function Settings() {
           className="form-control"
         />
         <input
+          disabled
           type="text"
           onChange={(event) => change(event.target.value, "username")}
           onBlur={(event) => handleSubmit(event.target.value, "username")}

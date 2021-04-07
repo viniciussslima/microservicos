@@ -115,8 +115,8 @@ module.exports = (req, res, next) => {
 				return res.sendStatus(200);
 			})*/
       user.save((err, profile) => {
-        req.session.user = profile.username;
-        req.session._id = profile._id;
+        // req.session.user = profile.username;
+        // req.session._id = profile._id;
         res.status(200).send("done");
       });
     });

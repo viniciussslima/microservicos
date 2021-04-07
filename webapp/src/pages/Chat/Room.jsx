@@ -86,27 +86,32 @@ export default function Chat() {
       <div className="container" id="mainPage">
         <ul className="list-group">
           {room && room.chats && room.chats.length ? (
-            room.chats.map((msg, index) => (
-              <ul key={index} className="list-group">
-                <li className="list-group-item">
-                  <img
-                    className="logo"
-                    style={{ height: 30, width: 30 }}
-                    src={`http://localhost:3002${friend.profile_pic}`}
-                    alt="friend-profile-pic"
-                  />
-                  <span>
-                    <b>{msg.by.username}</b>
-                  </span>
-                  <span className="timeSince float-right">
-                    {new Date(room.chats[index].time).toLocaleDateString()}
-                  </span>
-                  <br />
-                  <br />
-                  <span className="msg">{msg.txt}</span>
-                </li>
-              </ul>
-            ))
+            room.chats.map((msg, index) => {
+              const { profile_pic } = room.users.find(
+                (user) => user.username === msg.by.username
+              );
+              return (
+                <ul key={index} className="list-group">
+                  <li className="list-group-item">
+                    <img
+                      className="logo"
+                      style={{ height: 30, width: 30 }}
+                      src={`http://localhost:3002${profile_pic}`}
+                      alt="friend-profile-pic"
+                    />
+                    <span>
+                      <b>{msg.by.username}</b>
+                    </span>
+                    <span className="timeSince float-right">
+                      {new Date(room.chats[index].time).toLocaleDateString()}
+                    </span>
+                    <br />
+                    <br />
+                    <span className="msg">{msg.txt}</span>
+                  </li>
+                </ul>
+              );
+            })
           ) : (
             <div className="row">
               <div className="col-md-12">Send a message below!</div>
